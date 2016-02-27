@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Random;
 
 public class Game {
 	
@@ -29,6 +30,7 @@ public class Game {
 				
 				}while(dir == -1);
 			moveHero(dir);
+			randomMovement(availablePositions());
 		}
 	}
 	
@@ -122,6 +124,68 @@ public class Game {
 	      System.out.println("Error reading from user");
 	    }    
 		return -1;
-	}	
+	}
+	public static void randomMovement(int[] available)
+	{
+		Random gerador = new Random();
+		int numero = gerador.nextInt(available.length);
+		int pos[]= dragon.getPosition();
+		if (available[numero]==0)
+		{
+			pos[0]-=1;
+		}
+		else if (available[numero]==1)
+		{
+			pos[0]+=1;
+		}
+		else if (available[numero]==2)
+		{
+			pos[1]-=1;
+		}
+		else if (available[numero]==3)
+		{
+			pos[1]+=1;
+		}
+		
+	}
+	
+	public static int[] availablePositions(){
+		int []available={-1, -1, -1, -1};
+		int[] pos = dragon.getPosition().clone();
+		int soma=0;
+		if(!maze[pos[0]-1][pos[1]])
+			{
+			available[0]=0; //N
+			soma++;
+			}
+		if(!maze[pos[0]+1][pos[1]])
+			{
+			available[1]=1; //S
+			soma++;
+			}
+		if(!maze[pos[0]][pos[1]-1])
+			{
+			available[2]=2; //O
+			soma++;
+			}
+		if(!maze[pos[0]][pos[1]+1])
+			{
+			available[3]=3; //E
+			soma++;
+			}
+
+
+		int []availableRET=new int[soma];
+		soma=0;
+		for(int i=0;i<4;i++)
+		{
+			if(available[i]!=-1)
+				{
+				availableRET[soma]=available[i];
+					soma++;
+				}
+		}
+		return availableRET;
+	}
 	
 }
