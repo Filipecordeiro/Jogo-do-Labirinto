@@ -22,14 +22,40 @@ public class Game {
 	
 	public static void main(String[] args) {
 		int dir;
-
-		while(true){
+		boolean jogo=true;
+		while(jogo){
 			displayMaze();
+			if(distanceHeroDragon())
+			{
+				if(heroiArmado())
+				{
+					dragon.setState();
+				}
+				else{
+					jogo=false;
+				System.out.println("Perdeste o jogo");
+				}
+			}
 			do{
-				dir = getInput();
 				
-				}while(dir == -1);
-			moveHero(dir);
+				}while(!moveHero(getInput()));
+			if(heroVictory())
+				{
+					displayMaze();
+					jogo=false;
+				}
+			if(distanceHeroDragon())
+			{
+				if(heroiArmado())
+				{
+					dragon.setState();
+				}
+				else{
+					jogo=false;
+				displayMaze();
+				System.out.println("Perdeste o jogo");
+				}
+			}
 			randomMovement(availablePositions());
 		}
 	}
@@ -44,13 +70,19 @@ public class Game {
 		for(int i = 0; i < maze.length; i++){
 			for(int j = 0; j < maze[i].length; j++){
 				if (heroPos[0] == i && heroPos[1] == j)
-					System.out.print('H');
-				else if (dragonPos[0] == i && dragonPos[1] == j)
-					System.out.print('D');
-				else if (swordPos[0] == i && swordPos[1] == j)
-					System.out.print('E');
+				{
+					if(heroiArmado())
+						System.out.print('A');
+					else {
+						System.out.print('H');
+					}
+				}
 				else if (exitPos[0] == i && exitPos[1] == j)
 					System.out.print('S');
+				else if (dragonPos[0] == i && dragonPos[1] == j && dragon.getState())
+					System.out.print('D');
+				else if ((swordPos[0] == i && swordPos[1] == j)&&!heroiArmado())
+					System.out.print('E');
 				else if (maze[i][j])
 					System.out.print('X');
 				else System.out.print(' ');
@@ -124,7 +156,7 @@ public class Game {
 	      System.out.println("Error reading from user");
 	    }    
 		return -1;
-	}
+	}	
 	public static void randomMovement(int[] available)
 	{
 		Random gerador = new Random();
@@ -187,5 +219,25 @@ public class Game {
 		}
 		return availableRET;
 	}
+	public static boolean heroiArmado(){
+		if((hero.getPosition()[0]==sword.getPosition()[0]&&hero.getPosition()[1]==sword.getPosition()[1])||hero.getState())
+			{
+			hero.setState();
+			return true;
+			}
+		else return false;
+	}
 	
+	public static boolean distanceHeroDragon(){
+		return((Math.abs(hero.getPosition()[0]-dragon.getPosition()[0])==1&&(Math.abs(hero.getPosition()[1]-dragon.getPosition()[1])==0))||(Math.abs(hero.getPosition()[0]-dragon.getPosition()[0])==1&&(Math.abs(hero.getPosition()[0]-dragon.getPosition()[0])==0)));
+	}
+	public static boolean heroVictory()
+	{
+		if (!dragon.getState()&& hero.getPosition()[0]==exit.getPosition()[0] && hero.getPosition()[1]==exit.getPosition()[1])
+		{
+			System.out.println("Ganhaste!!");
+			return true;
+		}
+		return false;
+	}
 }
